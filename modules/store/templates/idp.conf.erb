@@ -1,0 +1,41 @@
+upstream idp {
+        ip_hash;
+        server <%= @idp_node1_host_name %>:<%= @sso_identity_provider_port %>;
+        server <%= @idp_node2_host_name %>:<%= @sso_identity_provider_port %>;
+
+        sticky learn
+          create=$upstream_cookie_jsessionid
+          lookup=$cookie_jsessionid
+          zone=client_sessions_https_nio:1m;
+}
+
+server {
+        listen   80;
+        server_name mgt.idp.am.wso2.com;
+        rewrite ^/(.*) https://idp.am.wso2.com/$1 permanent;
+}
+
+server {
+        listen <%= @sso_identity_provider_port %>;
+        server_name <%= @idp_cluster_host_name %>;
+
+        ssl on;
+        ssl_certificate /etc/nginx/ssl/<%= @nginx_crt_name %>.crt;
+        ssl_certificate_key /etc/nginx/ssl/<%= @nginx_key_name %>.key;
+
+    location / {
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_read_timeout 5m;
+        proxy_send_timeout 5m;
+
+        proxy_connect_timeout   2;
+        proxy_next_upstream     error timeout invalid_header http_500;
+        
+        proxy_pass https://idp/;
+        proxy_redirect https://idp/ https://<%= @idp_cluster_host_name %>/;
+
+    }
+}

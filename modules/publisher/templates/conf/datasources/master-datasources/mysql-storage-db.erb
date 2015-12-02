@@ -1,0 +1,22 @@
+   <datasource>
+           <name>JAGH2</name>
+           <description>The datasource used for by the Jaggery Storage Manager</description>
+           <jndiConfig>
+               <name><%=@jndi_datasource_for_storage_db%></name>
+           </jndiConfig>
+           <definition type="RDBMS">
+               <configuration>
+                   <url>jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @mysql_database_name_for_storage_db %>?autoReconnect=true&amp;relaxAutoCommit=true</url>
+                   <username><%= @mysql_username %></username>
+                   <password><%= @mysql_password %></password>
+                   <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                   <maxActive><%= @max_active %></maxActive>
+                   <maxWait><%= @max_wait %></maxWait>
+               </configuration>
+           </definition>
+       </datasource>
+
+
+
+
+
