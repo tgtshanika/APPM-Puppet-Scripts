@@ -13,12 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ----------------------------------------------------------------------------
+#
+# Starts the service once the deployment is successful.
 
+define nginx::start ($target, $owner, $nginx) {
 
-import 'nodes/appmanager.pp'
-import 'nodes/base.pp'
-import 'nodes/bam.pp'
-import 'nodes/nginx.pp'
-import 'nodes/default.pp'
-import 'nodes/is.pp'
+    exec {
+      "Restart_nginx":
+      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/',
+      command => "sudo /etc/init.d/nginx restart",
+      require => File["/etc/hosts"];
+    }
 
+}

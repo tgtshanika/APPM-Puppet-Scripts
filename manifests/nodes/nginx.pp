@@ -13,12 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ----------------------------------------------------------------------------
+#
 
+# Nginx node
+node /appm-store-node2/ inherits base {
 
-import 'nodes/appmanager.pp'
-import 'nodes/base.pp'
-import 'nodes/bam.pp'
-import 'nodes/nginx.pp'
-import 'nodes/default.pp'
-import 'nodes/is.pp'
+    notify { $name:
+        message => "on appm-store-node2 node",
+    }
 
+    class {'nginx':
+      owner              => 'root',
+      group              => 'root',
+    }
+    require java
+}

@@ -13,12 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ----------------------------------------------------------------------------
+#
+# Class store::params
+#
+# This class manages appm store parameters
+#
 
+class nginx::params {
+  #nginx conf
+  $nginx_crt_name     = 'server'
+  $nginx_key_name     = 'server'
 
-import 'nodes/appmanager.pp'
-import 'nodes/base.pp'
-import 'nodes/bam.pp'
-import 'nodes/nginx.pp'
-import 'nodes/default.pp'
-import 'nodes/is.pp'
-
+}

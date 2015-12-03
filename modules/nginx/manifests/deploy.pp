@@ -13,12 +13,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ----------------------------------------------------------------------------
+#
+# Executes the deployment by pushing all necessary configurations and patches
 
+define nginx::deploy ($security, $target, $owner, $group) {
 
-import 'nodes/appmanager.pp'
-import 'nodes/base.pp'
-import 'nodes/bam.pp'
-import 'nodes/nginx.pp'
-import 'nodes/default.pp'
-import 'nodes/is.pp'
+  exec {
+    "Copy_${name}_modules_to_carbon_home":
+      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/',
+      command => "cp -r /tmp/${nginx::deployment_code}/* ${target}/; chown -R ${owner}:${owner} ${target}/; chmod -R 755 ${target}/",
+      require => File["/tmp/${nginx::deployment_code}"];
 
+    "Remove_${name}_temporory_modules_directory":
+      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/',
+      command => "rm -rf /tmp/${nginx::deployment_code}",
+      require => Exec["Copy_${name}_modules_to_carbon_home"];
+  }
+}

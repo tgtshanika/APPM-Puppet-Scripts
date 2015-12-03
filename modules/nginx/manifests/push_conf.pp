@@ -13,12 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ----------------------------------------------------------------------------
-
-
-import 'nodes/appmanager.pp'
-import 'nodes/base.pp'
-import 'nodes/bam.pp'
-import 'nodes/nginx.pp'
-import 'nodes/default.pp'
-import 'nodes/is.pp'
-
+#
+# Apply the nginx conf file
+define nginx::push_conf ($directory, $target) {
+  file { "${target}/${name}":
+    ensure  => present,
+    owner   => $nginx::owner,
+    group   => $nginx::group,
+    mode    => '0777',
+    content => template("${directory}/${name}.erb"),
+  }
+}
